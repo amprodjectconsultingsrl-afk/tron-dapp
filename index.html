@@ -3,88 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Dashboard - TRC20</title>
+    <title>TronLink Clone</title>
     <script src="https://cdn.jsdelivr.net"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0f0f0f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .wallet-card { background: #1a1a1a; border-radius: 20px; padding: 30px; width: 380px; border: 1px solid #ff0013; box-shadow: 0 0 20px rgba(255, 0, 19, 0.2); }
-        .logo { color: #ff0013; font-weight: bold; font-size: 22px; text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
-        .label { color: #666; font-size: 12px; text-transform: uppercase; margin-top: 15px; }
-        .value { font-size: 28px; font-weight: bold; margin: 5px 0; color: #fff; }
-        .price-tag { font-size: 14px; color: #00ff88; background: rgba(0,255,136,0.1); padding: 4px 8px; border-radius: 5px; display: inline-block; }
-        .address-box { font-size: 11px; background: #111; padding: 10px; border-radius: 10px; word-break: break-all; color: #888; border: 1px solid #333; margin-top: 5px; }
-        .btn-group { display: flex; gap: 12px; margin-top: 30px; }
-        button { flex: 1; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
-        .btn-send { background: #ff0013; color: white; }
-        .btn-receive { background: #333; color: white; }
-        button:hover { opacity: 0.9; transform: scale(1.02); }
-        #status { font-size: 11px; text-align: center; margin-top: 20px; color: #ff0013; }
+        :root { --tron-red: #eb0029; --bg-dark: #121212; --card-bg: #1e1e1e; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: white; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 400px; height: 100vh; background: var(--bg-dark); position: relative; display: flex; flex-direction: column; border-right: 1px solid #333; border-left: 1px solid #333; }
+        
+        /* Header */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .wallet-name { font-size: 18px; font-weight: bold; color: #fff; }
+        .address-pill { background: #2a2a2a; padding: 4px 12px; border-radius: 20px; font-size: 11px; color: #888; }
+
+        /* Balance Section */
+        .main-card { padding: 20px; text-align: center; }
+        .total-balance-label { color: #888; font-size: 14px; }
+        .total-amount { font-size: 36px; font-weight: bold; margin: 10px 0; }
+        
+        /* Quick Actions */
+        .actions { display: flex; justify-content: space-around; padding: 20px; }
+        .action-item { text-align: center; cursor: pointer; }
+        .action-icon { width: 50px; height: 50px; background: #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; transition: 0.3s; }
+        .action-icon:hover { background: var(--tron-red); }
+        .action-item span { font-size: 12px; color: #ccc; }
+
+        /* Token List */
+        .token-list { flex: 1; background: var(--card-bg); border-radius: 30px 30px 0 0; padding: 20px; margin-top: 10px; }
+        .token-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #2a2a2a; }
+        .token-info { display: flex; align-items: center; gap: 12px; }
+        .token-logo { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--tron-red); border: 1px solid #444; }
+        .token-details .symbol { font-weight: bold; font-size: 16px; }
+        .token-details .price { font-size: 12px; color: #00ff88; }
+        .token-balance-col { text-align: right; }
+        .token-amount { font-weight: bold; }
+        .token-value { font-size: 12px; color: #888; }
+
+        /* Footer Nav */
+        .footer-nav { height: 70px; background: #1a1a1a; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; }
+        .nav-item { color: #555; text-align: center; font-size: 10px; }
+        .nav-item.active { color: var(--tron-red); }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
     </style>
 </head>
 <body>
 
-<div class="wallet-card">
-    <div class="logo">TRON ASSET MANAGER</div>
-    
-    <div class="label">Il tuo Indirizzo</div>
-    <div id="wallet-address" class="address-box">Connetti TronLink...</div>
-
-    <div class="label">Bilancio Token</div>
-    <div id="token-balance" class="value">0.00</div>
-    <div id="token-price" class="price-tag">Prezzo: Loading...</div>
-
-    <div class="btn-group">
-        <button class="btn-send" onclick="sendToken()">INVIA</button>
-        <button class="btn-receive" onclick="copyAddress()">RICEVI</button>
+<div class="app-container">
+    <div class="header">
+        <div class="wallet-name">Main Wallet</div>
+        <div id="addr-display" class="address-pill">Non Connesso</div>
     </div>
 
-    <div id="status">Verifica estensione in corso...</div>
+    <div class="main-card">
+        <div class="total-balance-label">Total Assets (USD)</div>
+        <div id="total-usd" class="total-amount">$ 0.00</div>
+    </div>
+
+    <div class="actions">
+        <div class="action-item" onclick="alert('Invia')">
+            <div class="action-icon"><i class="fas fa-paper-plane"></i></div>
+            <span>Invia</span>
+        </div>
+        <div class="action-item" onclick="alert('Ricevi')">
+            <div class="action-icon"><i class="fas fa-qrcode"></i></div>
+            <span>Ricevi</span>
+        </div>
+        <div class="action-item" onclick="alert('Stake')">
+            <div class="action-icon"><i class="fas fa-layer-group"></i></div>
+            <span>Stake</span>
+        </div>
+    </div>
+
+    <div class="token-list">
+        <div style="font-weight: bold; margin-bottom: 15px;">Assets</div>
+        
+        <!-- Tuo Token -->
+        <div class="token-item">
+            <div class="token-info">
+                <div class="token-logo">T</div>
+                <div class="token-details">
+                    <div class="symbol">TUO TOKEN</div>
+                    <div class="price">$0.9998</div>
+                </div>
+            </div>
+            <div class="token-balance-col">
+                <div id="token-balance" class="token-amount">0.00</div>
+                <div id="token-usd-value" class="token-value">$0.00</div>
+            </div>
+        </div>
+
+        <!-- TRX (Default) -->
+        <div class="token-item">
+            <div class="token-info">
+                <div class="token-logo" style="color:#fff">TRX</div>
+                <div class="token-details">
+                    <div class="symbol">TRX</div>
+                    <div id="trx-price-ui" class="price">Loading...</div>
+                </div>
+            </div>
+            <div class="token-balance-col">
+                <div id="trx-balance" class="token-amount">0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <div class="nav-item active"><i class="fas fa-wallet"></i>Assets</div>
+        <div class="nav-item"><i class="fas fa-chart-line"></i>Markets</div>
+        <div class="nav-item"><i class="fas fa-compass"></i>Discover</div>
+        <div class="nav-item"><i class="fas fa-user"></i>Me</div>
+    </div>
 </div>
 
 <script>
     const TOKEN_ADDRESS = "TJ2YrqZpUaTpgirM5chX6S2VhA1imMfrMR";
-    
-    async function loadData() {
+
+    async function sync() {
         if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-            const userAddress = window.tronWeb.defaultAddress.base58;
-            document.getElementById('wallet-address').innerText = userAddress;
-            document.getElementById('status').innerText = "Wallet Sincronizzato";
-            document.getElementById('status').style.color = "#00ff88";
+            const addr = window.tronWeb.defaultAddress.base58;
+            document.getElementById('addr-display').innerText = addr.substring(0,6) + "..." + addr.substring(addr.length-4);
 
             try {
-                // 1. Ottieni il contratto del Token
+                // Bilancio TRX
+                let trxBal = await window.tronWeb.trx.getBalance(addr);
+                document.getElementById('trx-balance').innerText = (trxBal / 1000000).toFixed(2);
+
+                // Bilancio Tuo Token
                 let contract = await window.tronWeb.contract().at(TOKEN_ADDRESS);
+                let balance = await contract.balanceOf(addr).call();
+                // Nota: se il tuo token ha 0 decimali, non dividere per nulla. 
+                // Se ne ha 6, dividi per 1.000.000
+                let val = Number(balance); 
+                document.getElementById('token-balance').innerText = val.toLocaleString();
                 
-                // 2. Leggi il bilancio (considerando i decimali, solitamente 6 o 18)
-                let balance = await contract.balanceOf(userAddress).call();
-                let decimals = await contract.decimals().call();
-                let finalBalance = balance / Math.pow(10, decimals);
-                document.getElementById('token-balance').innerText = finalBalance.toLocaleString() + " TOKEN";
+                // Calcolo Valore in USD (basato su 0.9998)
+                let usdValue = val * 0.9998;
+                document.getElementById('token-usd-value').innerText = "$ " + usdValue.toLocaleString();
+                document.getElementById('total-usd').innerText = "$ " + usdValue.toLocaleString();
 
-                // 3. Simula Prezzo da SUN.io (Opzione A)
-                // Nota: Per il prezzo reale serve l'indirizzo della pool. 
-                // Impostiamo il tuo valore target come base.
-                document.getElementById('token-price').innerText = "Prezzo: $0.9998";
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('status').innerText = "Errore nel caricamento dati.";
-            }
+            } catch(e) { console.error(e); }
         }
     }
 
-    function copyAddress() {
-        const addr = document.getElementById('wallet-address').innerText;
-        navigator.clipboard.writeText(addr);
-        alert("Indirizzo copiato!");
-    }
-
-    async function sendToken() {
-        alert("Funzione di invio: Reindirizzamento alla firma della transazione...");
-        // Qui inseriremo la logica di trasferimento nel prossimo step
-    }
-
-    setInterval(loadData, 3000); // Aggiorna ogni 3 secondi
+    setInterval(sync, 3000);
 </script>
 
 </body>
