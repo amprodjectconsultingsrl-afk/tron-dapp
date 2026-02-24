@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TronLink DApp</title>
+    <title>TronLink DApp Pro</title>
     <script src="https://cdn.jsdelivr.net"></script>
     <style>
-        :root { --tron-red: #eb5757; --text-black: #333; }
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #222; display: flex; justify-content: center; }
-        .app { width: 375px; height: 667px; background: white; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.6); position: relative; }
+        :root { --tron-red: #eb5757; --text-black: #333; --bg-gray: #f7f8f9; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #1a1a1a; display: flex; justify-content: center; }
+        .app { width: 375px; height: 667px; background: white; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); position: relative; }
         
         /* Header */
-        .header { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-weight: bold; color: var(--text-black); font-size: 14px; }
-        .btn-conn { background: var(--tron-red); color: white; border: none; padding: 4px 10px; border-radius: 20px; font-size: 10px; cursor: pointer; }
+        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-weight: 700; color: var(--text-black); }
+        .btn-conn { background: var(--tron-red); color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-conn:hover { background: #d44b4b; }
 
-        /* Card Rossa (Fix per numeri e Network) */
-        .card { background: var(--tron-red); margin: 12px; border-radius: 12px; padding: 18px; color: white; position: relative; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; opacity: 0.9; font-weight: 600; }
-        .network-label { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 9px; }
-        
+        /* Card Rossa HD (Stile Originale) */
+        .card { background: var(--tron-red); margin: 12px; border-radius: 12px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(235, 87, 87, 0.4); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; }
+        .network-label { background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 12px; font-size: 10px; border: 0.5px solid rgba(255,255,255,0.3); }
         .balance-container { margin: 15px 0; }
-        .card-label { font-size: 12px; opacity: 0.9; margin-bottom: 5px; }
-        /* Font ridimensionato per stare su una riga */
-        .card-balance { font-size: 24px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 5px; }
-        
-        .card-addr { font-size: 10px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 8px; font-family: monospace; display: flex; justify-content: space-between; margin-top: 10px; }
+        .card-label { font-size: 12px; opacity: 0.85; margin-bottom: 8px; }
+        .card-balance { font-size: 32px; font-weight: 800; white-space: nowrap; }
+        .card-addr { font-size: 11px; background: rgba(0,0,0,0.12); padding: 10px; border-radius: 10px; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
 
-        /* Icone Azioni */
-        .actions { display: flex; justify-content: space-around; padding: 20px 10px; border-bottom: 8px solid #f5f5f5; }
-        .act { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: #555; flex: 1; cursor: pointer; }
-        .act-icon { width: 44px; height: 44px; background: #f0f2f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .act-icon svg { width: 20px; height: 20px; fill: #444; }
+        /* Icone Azioni (SVG Originali) */
+        .actions { display: flex; justify-content: space-around; padding: 25px 10px; border-bottom: 10px solid #f5f5f5; }
+        .act { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; color: #555; flex: 1; cursor: pointer; }
+        .act-icon { width: 50px; height: 50px; background: #f0f2f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .act-icon svg { width: 24px; height: 24px; fill: #444; }
 
-        /* Assets */
-        .asset-title { padding: 15px; font-weight: 800; font-size: 17px; color: #333; }
-        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; }
-        .row-left { display: flex; align-items: center; gap: 12px; }
-        .logo-box { width: 36px; height: 36px; }
-        .t-name { font-weight: bold; font-size: 14px; color: #333; }
-        .t-price { font-size: 11px; color: #27ae60; margin-top: 2px; }
+        /* Assets Section */
+        .asset-title { padding: 15px 20px; font-weight: 800; font-size: 18px; color: #333; }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; }
+        .row-left { display: flex; align-items: center; gap: 14px; }
+        .logo-box { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+        .t-name { font-weight: 700; font-size: 15px; color: #333; }
+        .t-price { font-size: 12px; color: #27ae60; font-weight: 500; margin-top: 2px; }
         .t-right { text-align: right; }
-        .t-bal { font-weight: bold; font-size: 14px; color: #333; }
-        .t-usd { font-size: 11px; color: #999; margin-top: 2px; }
+        .t-bal { font-weight: 700; font-size: 16px; color: #333; }
+        .t-usd { font-size: 12px; color: #999; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -49,7 +48,7 @@
 <div class="app">
     <div class="header">
         <span>TronLink Pro</span>
-        <button class="btn-conn" id="c-btn" onclick="conn()">Connect</button>
+        <button class="btn-conn" id="c-btn" onclick="conn()">Connect Wallet</button>
     </div>
 
     <div class="card">
@@ -61,34 +60,38 @@
             <div class="card-label">Total Assets (USD)</div>
             <div class="card-balance">$ <span id="total">0.00</span></div>
         </div>
-        <div class="card-addr" id="addr">Wallet non connesso <span>📄</span></div>
+        <div class="card-addr" id="addr">Wallet non connesso <span style="cursor:pointer">📄</span></div>
     </div>
 
     <div class="actions">
-        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z""")/>></svg></div><span>Send</span></div>
-        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z""")/>></svg></div><span>Receive</span></div>
-        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z""")/>></svg></div><span>Swap</span></div>
-        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z""")/>></svg></div><span>Stake</span></div>
+        <!-- Invia -->
+        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></div><span>Send</span></div>
+        <!-- Ricevi -->
+        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"></path></svg></div><span>Receive</span></div>
+        <!-- Swap -->
+        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"></path></svg></div><span>Swap</span></div>
+        <!-- Stake -->
+        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"></path></svg></div><span>Stake</span></div>
     </div>
 
     <div class="asset-title">Assets</div>
 
-    <!-- USDT con Logo Diamante -->
+    <!-- USDT con Logo Originale -->
     <div class="row">
         <div class="row-left">
             <div class="logo-box">
-                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#26a17b""")/>><path d="M50 25L25 45l25 30 25-30z" fill="white""")/>></svg>
+                <img src="https://static.tronscan.org" alt="USDT">
             </div>
             <div><div class="t-name">Tether USDT</div><div class="t-price">$0.9998</div></div>
         </div>
         <div class="t-right"><div class="t-bal" id="u-bal">0.00</div><div class="t-usd" id="u-usd">$ 0.00</div></div>
     </div>
 
-    <!-- TRX -->
+    <!-- TRX con Logo Originale -->
     <div class="row">
         <div class="row-left">
             <div class="logo-box">
-                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#eb5757""")/>><path d="M50 30L35 50l15 20 15-20z" fill="white""")/>></svg>
+                <img src="https://static.tronscan.org" alt="TRX">
             </div>
             <div><div class="t-name">TRX</div><div class="t-price">$0.282</div></div>
         </div>
@@ -102,7 +105,7 @@
     async function sync() {
         if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
             const a = window.tronWeb.defaultAddress.base58;
-            document.getElementById('addr').innerText = a.substring(0,10) + "... 📄";
+            document.getElementById('addr').innerText = a.substring(0,12) + "... 📄";
             document.getElementById('c-btn').style.display = 'none';
             try {
                 let trx = await window.tronWeb.trx.getBalance(a);
@@ -111,8 +114,8 @@
                 let b = await c.balanceOf(a).call();
                 let val = Number(b)/1000000;
                 document.getElementById('u-bal').innerText = val.toLocaleString('it-IT');
-                document.getElementById('u-usd').innerText = "$ " + (val*0.999).toLocaleString('it-IT');
-                document.getElementById('total').innerText = (val*0.999).toLocaleString('it-IT', {minimumFractionDigits:2});
+                document.getElementById('u-usd').innerText = "$ " + (val*0.9998).toLocaleString('it-IT');
+                document.getElementById('total').innerText = (val*0.9998).toLocaleString('it-IT', {minimumFractionDigits:2});
             } catch(e) {}
         }
     }
