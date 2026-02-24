@@ -3,166 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TronLink Asset Manager</title>
+    <title>TronLink Web</title>
     <script src="https://cdn.jsdelivr.net"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
     <style>
-        :root { --tron-red: #ff0013; --bg-dark: #000000; --card-bg: #121212; --text-gray: #8e8e93; }
-        body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg-dark); color: white; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 420px; height: 100vh; background: var(--bg-dark); position: relative; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --tron-red: #eb0029; --bg-black: #000000; --card-dark: #121212; --gray-text: #8e8e93; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-black); color: white; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 420px; height: 100vh; display: flex; flex-direction: column; border-right: 1px solid #1c1c1e; border-left: 1px solid #1c1c1e; }
         
-        /* Header */
-        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1a1a; }
-        .wallet-name { font-size: 16px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .address-pill { background: #1c1c1e; padding: 4px 10px; border-radius: 12px; font-size: 11px; color: var(--text-gray); border: 1px solid #2c2c2e; }
+        /* Header & Connect */
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid #1c1c1e; }
+        .btn-connect { background: var(--tron-red); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .address-pill { font-family: monospace; background: #1c1c1e; padding: 5px 10px; border-radius: 8px; color: var(--gray-text); font-size: 11px; display: none; }
 
         /* Balance Section */
-        .main-card { padding: 30px 20px; text-align: left; }
-        .total-balance-label { color: var(--text-gray); font-size: 13px; margin-bottom: 5px; }
-        .total-amount { font-size: 38px; font-weight: 700; margin: 0; display: flex; align-items: baseline; gap: 8px; }
-        .currency { font-size: 18px; font-weight: 400; color: var(--text-gray); }
-        
-        /* Quick Actions (Look TronLink) */
-        .actions { display: flex; justify-content: space-between; padding: 10px 30px 25px; }
-        .action-item { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .action-icon { width: 44px; height: 44px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; transition: 0.2s; border: 1px solid #2c2c2e; }
-        .action-icon:hover { background: var(--tron-red); border-color: var(--tron-red); }
-        .action-item span { font-size: 12px; color: #fff; font-weight: 400; }
+        .main-card { padding: 35px 20px; }
+        .total-label { color: var(--gray-text); font-size: 13px; margin-bottom: 8px; }
+        .balance-row { display: flex; align-items: baseline; gap: 10px; }
+        .amount { font-size: 42px; font-weight: 700; letter-spacing: -1px; }
+        .currency { color: var(--gray-text); font-size: 18px; font-weight: 500; }
 
-        /* Asset Section */
-        .token-list-container { flex: 1; background: #000; border-top: 8px solid #0a0a0a; padding: 20px; }
-        .tabs { display: flex; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid #1a1a1a; padding-bottom: 10px; }
-        .tab-item { font-weight: 600; font-size: 15px; color: var(--text-gray); }
-        .tab-item.active { color: #fff; position: relative; }
-        .tab-item.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 2px; background: var(--tron-red); }
+        /* Actions - Original Style */
+        .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 20px 30px; text-align: center; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+        .icon-circle { width: 48px; height: 48px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; }
+        .icon-circle:hover { background: #2c2c2e; }
+        .action-label { font-size: 11px; color: white; }
 
-        .token-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
-        .token-info { display: flex; align-items: center; gap: 14px; }
-        .token-logo { width: 42px; height: 42px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 20px; }
-        .token-details .symbol { font-weight: 700; font-size: 16px; color: #fff; }
-        .token-details .price { font-size: 12px; color: #00ff88; margin-top: 2px; }
-        .token-balance-col { text-align: right; }
-        .token-amount { font-weight: 700; font-size: 16px; color: #fff; }
-        .token-value { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
+        /* Asset List */
+        .asset-section { flex: 1; background: #000; border-top: 8px solid #0a0a0a; padding: 20px; }
+        .tabs { display: flex; gap: 24px; border-bottom: 1px solid #1c1c1e; margin-bottom: 20px; padding-bottom: 10px; }
+        .tab { color: var(--gray-text); font-weight: 600; font-size: 15px; position: relative; }
+        .tab.active { color: white; }
+        .tab.active::after { content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 2px; background: var(--tron-red); }
 
-        /* Footer Nav (Look TronLink) */
-        .footer-nav { height: 75px; background: #0a0a0a; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { color: #48484a; text-align: center; font-size: 10px; cursor: pointer; }
-        .nav-item.active { color: var(--tron-red); }
-        .nav-item i { font-size: 22px; margin-bottom: 5px; display: block; }
+        .token-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 0.5px solid #1c1c1e; }
+        .token-left { display: flex; align-items: center; gap: 14px; }
+        .token-img { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #222; }
+        .token-img img { width: 100%; height: 100%; object-fit: cover; }
+        .token-name { font-weight: 600; font-size: 16px; margin-bottom: 2px; }
+        .token-price { color: #32d74b; font-size: 12px; }
+        .token-right { text-align: right; }
+        .token-bal { font-weight: 700; font-size: 17px; }
+        .token-usd { color: var(--gray-text); font-size: 12px; margin-top: 2px; }
+
+        /* Nav Bar */
+        .nav-bar { height: 70px; background: #0a0a0a; display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #1c1c1e; }
+        .nav-link { color: #48484a; text-align: center; font-size: 10px; text-decoration: none; }
+        .nav-link.active { color: var(--tron-red); }
+        .nav-link i { font-size: 22px; margin-bottom: 4px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="header">
-        <div class="wallet-name"><i class="fas fa-wallet" style="color: var(--tron-red);"></i> My Assets</div>
-        <div id="addr-display" class="address-pill">Connecting...</div>
+        <div style="font-weight: bold; font-size: 16px;">TronLink Pro</div>
+        <button id="connect-btn" class="btn-connect" onclick="connectWallet()">Connect Wallet</button>
+        <div id="addr-pill" class="address-pill"></div>
     </div>
 
     <div class="main-card">
-        <div class="total-balance-label">Total Assets</div>
-        <div class="total-amount"><span id="total-usd">0.00</span> <span class="currency">USD</span></div>
-    </div>
-
-    <div class="actions">
-        <div class="action-item" onclick="alert('Funzione Invia')">
-            <div class="action-icon"><i class="fas fa-arrow-up"></i></div>
-            <span>Send</span>
-        </div>
-        <div class="action-item" onclick="alert('Funzione Ricevi')">
-            <div class="action-icon"><i class="fas fa-arrow-down"></i></div>
-            <span>Receive</span>
-        </div>
-        <div class="action-item" onclick="alert('Swap')">
-            <div class="action-icon"><i class="fas fa-exchange-alt"></i></div>
-            <span>Swap</span>
-        </div>
-        <div class="action-item" onclick="alert('Stake')">
-            <div class="action-icon"><i class="fas fa-layer-group"></i></div>
-            <span>Stake</span>
+        <div class="total-label">Total Assets</div>
+        <div class="balance-row">
+            <div id="total-val" class="amount">0.00</div>
+            <div class="currency">USD</div>
         </div>
     </div>
 
-    <div class="token-list-container">
+    <div class="actions-grid">
+        <div class="action-btn"><div class="icon-circle"><i class="fas fa-arrow-up"></i></div><span class="action-label">Send</span></div>
+        <div class="action-btn"><div class="icon-circle"><i class="fas fa-arrow-down"></i></div><span class="action-label">Receive</span></div>
+        <div class="action-btn"><div class="icon-circle"><i class="fas fa-exchange-alt"></i></div><span class="action-label">Swap</span></div>
+        <div class="action-btn"><div class="icon-circle"><i class="fas fa-vote-yea"></i></div><span class="action-label">Stake</span></div>
+    </div>
+
+    <div class="asset-section">
         <div class="tabs">
-            <div class="tab-item active">Tokens</div>
-            <div class="tab-item">Collectibles</div>
+            <div class="tab active">Tokens</div>
+            <div class="tab">Collectibles</div>
         </div>
-        
-        <!-- Tuo Token TRC20 -->
-        <div class="token-item">
-            <div class="token-info">
-                <div class="token-logo" style="background: #ff0013; color: white;">T</div>
-                <div class="token-details">
-                    <div class="symbol">YOUR TOKEN</div>
-                    <div class="price">$0.9998 <span style="font-size: 10px; color: #888;">(SUN.io)</span></div>
+
+        <!-- Tether USDT (Il Tuo Token) -->
+        <div class="token-row">
+            <div class="token-left">
+                <div class="token-img"><img src="https://coin.top" alt="USDT"></div>
+                <div>
+                    <div class="token-name">Tether USDT</div>
+                    <div class="token-price">$0.9998</div>
                 </div>
             </div>
-            <div class="token-balance-col">
-                <div id="token-balance" class="token-amount">0.00</div>
-                <div id="token-usd-value" class="token-value">$ 0.00</div>
+            <div class="token-right">
+                <div id="usdt-balance" class="token-bal">0.00</div>
+                <div id="usdt-usd" class="token-usd">$ 0.00</div>
             </div>
         </div>
 
         <!-- TRX -->
-        <div class="token-item" style="opacity: 0.7;">
-            <div class="token-info">
-                <div class="token-logo" style="background: #fff; color: #000;">TRX</div>
-                <div class="token-details">
-                    <div class="symbol">TRX</div>
-                    <div class="price">Mainnet Asset</div>
+        <div class="token-row" style="opacity: 0.8;">
+            <div class="token-left">
+                <div class="token-img"><img src="https://coin.top" alt="TRX"></div>
+                <div>
+                    <div class="token-name">TRX</div>
+                    <div class="token-price">TRON Network</div>
                 </div>
             </div>
-            <div class="token-balance-col">
-                <div id="trx-balance" class="token-amount">0.00</div>
+            <div class="token-right">
+                <div id="trx-balance" class="token-bal">0.00</div>
             </div>
         </div>
     </div>
 
-    <div class="footer-nav">
-        <div class="nav-item active"><i class="fas fa-wallet"></i>Assets</div>
-        <div class="nav-item"><i class="fas fa-chart-bar"></i>Markets</div>
-        <div class="nav-item"><i class="fas fa-th-large"></i>Discover</div>
-        <div class="nav-item"><i class="fas fa-user"></i>Me</div>
+    <div class="nav-bar">
+        <a href="#" class="nav-link active"><i class="fas fa-wallet"></i>Assets</a>
+        <a href="#" class="nav-link"><i class="fas fa-chart-line"></i>Markets</a>
+        <a href="#" class="nav-link"><i class="fas fa-compass"></i>Discover</a>
+        <a href="#" class="nav-link"><i class="fas fa-user"></i>Me</a>
     </div>
 </div>
 
 <script>
-    const TOKEN_ADDRESS = "TJ2YrqZpUaTpgirM5chX6S2VhA1imMfrMR";
+    const TOKEN_ADDR = "TJ2YrqZpUaTpgirM5chX6S2VhA1imMfrMR";
 
-    async function sync() {
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-            const addr = window.tronWeb.defaultAddress.base58;
-            document.getElementById('addr-display').innerText = addr.substring(0,6) + "..." + addr.substring(addr.length-4);
-
+    async function connectWallet() {
+        if (window.tronWeb) {
             try {
-                // 1. Bilancio TRX
-                let trxBal = await window.tronWeb.trx.getBalance(addr);
-                document.getElementById('trx-balance').innerText = (trxBal / 1000000).toFixed(2);
-
-                // 2. Bilancio Tuo Token (Corretto con 6 decimali)
-                let contract = await window.tronWeb.contract().at(TOKEN_ADDRESS);
-                let balance = await contract.balanceOf(addr).call();
-                
-                // Conversione corretta per 6 decimali
-                let val = Number(balance) / 1000000; 
-                
-                document.getElementById('token-balance').innerText = val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                
-                // 3. Calcolo Valore in USD
-                let usdValue = val * 0.9998;
-                document.getElementById('token-usd-value').innerText = "$ " + usdValue.toLocaleString(undefined, {minimumFractionDigits: 2});
-                document.getElementById('total-usd').innerText = usdValue.toLocaleString(undefined, {minimumFractionDigits: 2});
-
-            } catch(e) { 
-                console.error("Errore sincronizzazione:", e); 
-            }
+                // Richiede l'accesso a TronLink
+                await window.tronLink.request({ method: 'tron_requestAccounts' });
+                updateUI();
+            } catch(e) { alert("Connessione rifiutata"); }
+        } else {
+            alert("Installa TronLink!");
         }
     }
 
-    // Avvia sincronizzazione automatica
-    setInterval(sync, 2500);
+    async function updateUI() {
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+            const addr = window.tronWeb.defaultAddress.base58;
+            document.getElementById('connect-btn').style.display = 'none';
+            const pill = document.getElementById('addr-pill');
+            pill.style.display = 'block';
+            pill.innerText = addr.substring(0,5) + "..." + addr.substring(addr.length-4);
+
+            try {
+                // Bilancio TRX
+                let trx = await window.tronWeb.trx.getBalance(addr);
+                document.getElementById('trx-balance').innerText = (trx / 1000000).toFixed(2);
+
+                // Bilancio USDT (Tuo Token)
+                let contract = await window.tronWeb.contract().at(TOKEN_ADDR);
+                let bal = await contract.balanceOf(addr).call();
+                let cleanBal = Number(bal) / 1000000;
+                
+                document.getElementById('usdt-balance').innerText = cleanBal.toLocaleString(undefined, {minimumFractionDigits: 2});
+                let usdValue = cleanBal * 0.9998;
+                document.getElementById('usdt-usd').innerText = "$ " + usdValue.toLocaleString(undefined, {minimumFractionDigits: 2});
+                document.getElementById('total-val').innerText = usdValue.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            } catch(e) { console.error(e); }
+        }
+    }
+
+    // Auto-check se già loggato
+    setInterval(updateUI, 2000);
 </script>
 
 </body>
