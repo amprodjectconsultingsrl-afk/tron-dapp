@@ -3,85 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TronLink Mobile DApp</title>
+    <title>TronLink DApp Pro</title>
     <script src="https://cdn.jsdelivr.net"></script>
-    <!-- Carico le icone in modo sicuro -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
     <style>
         :root { --tron-red: #eb5757; --bg-page: #f5f5f7; --bg-card: #ffffff; --text-main: #1d1d1f; --text-sub: #86868b; --icon-bg: #f0f0f2; }
         [data-theme="dark"] { --bg-page: #000000; --bg-card: #1c1c1e; --text-main: #ffffff; --text-sub: #8e8e93; --icon-bg: #2c2c2e; }
 
-        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #222; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 414px; height: 100vh; background: var(--bg-page); display: flex; flex-direction: column; position: relative; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #333; display: flex; justify-content: center; transition: background 0.3s; }
+        .app-container { width: 100%; max-width: 414px; height: 100vh; background: var(--bg-page); display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Header con Luna visibile */
+        /* Header Professionale */
         .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); border-bottom: 1px solid var(--icon-bg); }
-        .theme-toggle { cursor: pointer; font-size: 20px; color: var(--tron-red); padding: 5px; }
+        .header-btns { display: flex; gap: 15px; align-items: center; }
+        .btn-conn { background: var(--tron-red); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .theme-btn { cursor: pointer; font-size: 18px; color: var(--text-main); }
 
-        /* Card Rossa HD */
-        .wallet-card { background: var(--tron-red); margin: 15px; border-radius: 18px; padding: 22px; color: white; box-shadow: 0 10px 25px rgba(235, 87, 87, 0.4); }
-        .balance-row { font-size: 36px; font-weight: 800; margin: 8px 0; }
-        .addr-row { font-size: 11px; opacity: 0.8; font-family: monospace; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; }
+        /* Wallet Card Rossa */
+        .wallet-card { background: var(--tron-red); margin: 15px; border-radius: 15px; padding: 20px; color: white; box-shadow: 0 8px 25px rgba(235, 87, 87, 0.4); }
+        .total-label { font-size: 12px; opacity: 0.9; margin-bottom: 5px; }
+        .total-amount { font-size: 34px; font-weight: 800; }
+        .addr-box { font-size: 11px; font-family: monospace; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 8px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Icone Azioni Sistemate */
-        .actions-bar { display: flex; justify-content: space-around; padding: 10px 0 25px; text-align: center; }
-        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); flex: 1; }
-        .icon-circle { width: 52px; height: 52px; background: var(--icon-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .action-btn span { font-size: 12px; font-weight: 600; }
+        /* Icons Bar - Fissate */
+        .action-row { display: flex; justify-content: space-around; padding: 15px 10px; background: var(--bg-page); }
+        .action-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; flex: 1; }
+        .icon-circle { width: 52px; height: 52px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .action-item span { font-size: 11px; font-weight: 600; color: var(--text-main); }
 
-        /* Lista Token */
-        .asset-list { flex: 1; background: var(--bg-card); border-radius: 30px 30px 0 0; padding: 25px 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .token-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--icon-bg); }
-        .t-left { display: flex; align-items: center; gap: 15px; }
-        .t-icon { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #eee; }
-        .t-name { font-weight: 700; color: var(--text-main); font-size: 16px; }
-        .t-price { font-size: 12px; color: #27ae60; margin-top: 2px; }
-        .t-bal { font-weight: 800; color: var(--text-main); font-size: 17px; }
+        /* Assets Section */
+        .assets-area { flex: 1; background: var(--bg-card); border-radius: 25px 25px 0 0; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .tab-header { font-weight: 800; font-size: 18px; color: var(--text-main); margin-bottom: 20px; display: flex; gap: 20px; }
+        .token-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--icon-bg); }
+        .token-info { display: flex; align-items: center; gap: 12px; }
+        .token-logo { width: 40px; height: 40px; border-radius: 50%; background: #eee; object-fit: cover; }
+        .token-name { font-weight: 700; color: var(--text-main); }
+        .token-price { font-size: 12px; color: #27ae60; }
+        .token-right { text-align: right; }
+        .token-bal { font-weight: 700; color: var(--text-main); font-size: 16px; }
     </style>
 </head>
 <body data-theme="light">
 
 <div class="app-container">
     <div class="header">
-        <div style="font-weight: 900; font-size: 18px; color: var(--text-main);">TronLink Pro</div>
-        <div class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
+        <div style="font-weight: 900; color: var(--text-main);">TronLink Pro</div>
+        <div class="header-btns">
+            <button id="connect-btn" class="btn-conn" onclick="connect()">Connect</button>
+            <div class="theme-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></div>
+        </div>
     </div>
 
     <div class="wallet-card">
-        <div style="font-size: 13px; font-weight: 500;">Total Assets (USD)</div>
-        <div class="balance-row">$ <span id="total-val">0.00</span></div>
-        <div class="addr-row" id="wallet-addr" onclick="connectWallet()">Tocca per connettere Wallet <i class="fas fa-link"></i></div>
+        <div class="total-label">Total Assets (USD)</div>
+        <div class="total-amount">$ <span id="total-val">0.00</span></div>
+        <div class="addr-box">
+            <span id="wallet-addr">Wallet non connesso</span>
+            <i class="far fa-copy" onclick="copyAddr()" style="cursor:pointer"></i>
+        </div>
     </div>
 
-    <div class="actions-bar">
-        <div class="action-btn"><div class="icon-circle"><i class="fas fa-paper-plane"></i></div><span>Send</span></div>
-        <div class="action-btn"><div class="icon-circle"><i class="fas fa-qrcode"></i></div><span>Receive</span></div>
-        <div class="action-btn"><div class="icon-circle"><i class="fas fa-sync-alt"></i></div><span>Swap</span></div>
-        <div class="action-btn"><div class="icon-circle"><i class="fas fa-coins"></i></div><span>Stake</span></div>
+    <div class="action-row">
+        <div class="action-item"><div class="icon-circle"><i class="fas fa-paper-plane"></i></div><span>Send</span></div>
+        <div class="action-item"><div class="icon-circle"><i class="fas fa-qrcode"></i></div><span>Receive</span></div>
+        <div class="action-item"><div class="icon-circle"><i class="fas fa-exchange-alt"></i></div><span>Swap</span></div>
+        <div class="action-item"><div class="icon-circle"><i class="fas fa-coins"></i></div><span>Stake</span></div>
     </div>
 
-    <div class="asset-list">
-        <div style="font-weight: 800; margin-bottom: 15px; color: var(--text-main);">Assets</div>
-
-        <!-- USDT -->
-        <div class="token-item">
-            <div class="t-left">
-                <img src="https://static.tronscan.org" class="t-icon">
-                <div><div class="t-name">Tether USDT</div><div class="t-price">$0.9998</div></div>
+    <div class="assets-area">
+        <div class="tab-header"><span>Assets</span><span style="color:var(--text-sub); font-size:14px">Collectibles</span></div>
+        
+        <!-- Tether USDT -->
+        <div class="token-row">
+            <div class="token-info">
+                <img src="https://static.tronscan.org" class="token-logo" onerror="this.src='https://coin.top'">
+                <div><div class="token-name">Tether USDT</div><div class="token-price">$0.9998</div></div>
             </div>
-            <div class="t-right">
-                <div id="usdt-bal" class="t-bal">0.00</div>
-                <div id="usdt-usd" style="font-size:12px; color:var(--text-sub);">$ 0.00</div>
+            <div class="token-right">
+                <div id="usdt-bal" class="token-bal">0.00</div>
+                <div id="usdt-usd" style="font-size:11px; color:var(--text-sub)">$ 0.00</div>
             </div>
         </div>
 
         <!-- TRX -->
-        <div class="token-row" style="display:flex; justify-content:space-between; align-items:center; padding: 16px 0;">
-            <div class="t-left">
-                <img src="https://static.tronscan.org" class="t-icon">
-                <div><div class="t-name">TRX</div><div class="t-price">$0.282</div></div>
+        <div class="token-row">
+            <div class="token-info">
+                <img src="https://static.tronscan.org" class="token-logo">
+                <div><div class="token-name">TRX</div><div class="token-price">$0.282</div></div>
             </div>
-            <div id="trx-bal" class="t-bal">0.00</div>
+            <div class="token-right">
+                <div id="trx-bal" class="token-bal">0.00</div>
+            </div>
         </div>
     </div>
 </div>
@@ -91,22 +103,29 @@
 
     function toggleTheme() {
         const body = document.body;
-        const isLight = body.getAttribute('data-theme') === 'light';
-        body.setAttribute('data-theme', isLight ? 'dark' : 'light');
-        document.querySelector('.theme-toggle i').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+        const icon = document.getElementById('theme-icon');
+        if(body.getAttribute('data-theme') === 'light') {
+            body.setAttribute('data-theme', 'dark');
+            icon.className = 'fas fa-sun';
+        } else {
+            body.setAttribute('data-theme', 'light');
+            icon.className = 'fas fa-moon';
+        }
     }
 
-    async function connectWallet() {
+    async function connect() {
         if (window.tronWeb) {
             await window.tronLink.request({ method: 'tron_requestAccounts' });
             sync();
-        }
+        } else { alert("Installa TronLink!"); }
     }
 
     async function sync() {
         if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
             const addr = window.tronWeb.defaultAddress.base58;
-            document.getElementById('wallet-addr').innerHTML = addr.substring(0,8) + "..." + addr.substring(addr.length-8) + ' <i class="far fa-copy"></i>';
+            document.getElementById('wallet-addr').innerText = addr.substring(0,8) + "..." + addr.substring(addr.length-8);
+            document.getElementById('connect-btn').style.display = 'none';
+
             try {
                 let trx = await window.tronWeb.trx.getBalance(addr);
                 document.getElementById('trx-bal').innerText = (trx / 1000000).toLocaleString();
@@ -119,10 +138,11 @@
                 let val = cleanBal * 0.9998;
                 document.getElementById('usdt-usd').innerText = "$ " + val.toLocaleString();
                 document.getElementById('total-val').innerText = val.toLocaleString(undefined, {minimumFractionDigits:2});
-            } catch(e) {}
+            } catch(e) { console.log(e); }
         }
     }
     setInterval(sync, 3000);
+    function copyAddr() { navigator.clipboard.writeText(window.tronWeb.defaultAddress.base58); alert("Copiato!"); }
 </script>
 </body>
 </html>
