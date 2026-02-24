@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tron Dashboard</title>
+    <script src="https://cdn.jsdelivr.net"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; padding: 20px; }
+        .wallet-card { background: #1e1e1e; border-radius: 15px; padding: 25px; width: 350px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .logo { color: #ff0013; font-weight: bold; font-size: 24px; margin-bottom: 20px; }
+        .balance-label { color: #888; font-size: 14px; }
+        .balance-amount { font-size: 32px; font-weight: bold; margin: 10px 0; }
+        .address-box { font-size: 12px; background: #2a2a2a; padding: 8px; border-radius: 5px; word-break: break-all; color: #aaa; }
+        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
+        button { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-send { background: #ff0013; color: white; }
+        .btn-receive { background: #333; color: white; }
+        button:hover { opacity: 0.8; transform: translateY(-2px); }
+        #status { font-size: 12px; margin-top: 15px; color: #00ff88; }
+    </style>
+</head>
+<body>
+
+<div class="wallet-card">
+    <div class="logo">TRON DApp</div>
+    
+    <div class="balance-label">Indirizzo Connesso:</div>
+    <div id="wallet-address" class="address-box">In attesa di TronLink...</div>
+
+    <div class="balance-label" style="margin-top: 20px;">Bilancio TRX:</div>
+    <div id="balance" class="balance-amount">0.00</div>
+
+    <div class="btn-group">
+        <button class="btn-send" onclick="alert('Funzione Invio in arrivo!')">INVIA</button>
+        <button class="btn-receive" onclick="alert('Il tuo indirizzo: ' + window.tronWeb.defaultAddress.base58)">RICEVI</button>
+    </div>
+
+    <div id="status">Verifica TronLink...</div>
+</div>
+
+<script>
+    async function connectWallet() {
+        if (window.tronWeb) {
+            const address = window.tronWeb.defaultAddress.base58;
+            if (address) {
+                document.getElementById('wallet-address').innerText = address;
+                document.getElementById('status').innerText = "Wallet Connesso con Successo!";
+                
+                // Recupera il bilancio TRX
+                const balance = await window.tronWeb.trx.getBalance(address);
+                document.getElementById('balance').innerText = (balance / 1000000).toFixed(2);
+            } else {
+                document.getElementById('status').innerText = "Per favore, sblocca TronLink.";
+            }
+        } else {
+            document.getElementById('status').style.color = "orange";
+            document.getElementById('status').innerText = "TronLink non rilevato. Installa l'estensione!";
+        }
+    }
+
+    // Prova a connettersi ogni secondo finché TronLink non risponde
+    const checkInterval = setInterval(() => {
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+            connectWallet();
+            clearInterval(checkInterval);
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
