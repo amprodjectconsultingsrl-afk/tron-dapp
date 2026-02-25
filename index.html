@@ -6,50 +6,26 @@
     <title>TronLink Clone Pro</title>
     <script src="https://cdn.jsdelivr.net"></script>
     <style>
-        :root { --red: #eb5757; --bg: #f7f8f9; --txt: #333; }
+        :root { --red: #eb5757; --txt: #333; }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #1a1a1a; display: flex; justify-content: center; }
         .app { width: 375px; height: 667px; background: white; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 0 50px #000; }
-        
-        /* Header */
         .header { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-weight: 700; color: var(--txt); }
         .btn-conn { background: var(--red); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
-
-        /* Card Rossa HD */
         .card { background: var(--red); margin: 12px; border-radius: 12px; padding: 20px; color: white; box-shadow: 0 8px 20px rgba(235, 87, 87, 0.4); }
         .card-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; }
-        .net-tag { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 9px; }
         .card-bal { font-size: 34px; font-weight: 800; margin: 15px 0; }
         .card-addr { font-size: 10px; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 8px; font-family: monospace; display: flex; justify-content: space-between; }
-
-        /* Resources */
-        .res { display: flex; gap: 10px; margin-top: 15px; font-size: 10px; }
-        .bar { height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 4px; flex: 1; }
-        .fill { height: 100%; border-radius: 2px; }
-
-        /* Actions */
         .actions { display: flex; justify-content: space-around; padding: 20px 5px; border-bottom: 8px solid #f5f5f5; text-align: center; }
         .act { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon { width: 46px; height: 46px; background: #f0f2f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .icon svg { width: 22px; height: 22px; fill: #444; }
-
-        /* Assets */
-        .asset-title { padding: 15px 20px; font-weight: 800; font-size: 17px; }
         .row { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f9f9f9; }
         .t-left { display: flex; align-items: center; gap: 12px; }
-        .t-img { width: 38px; height: 38px; border-radius: 50%; }
+        .t-img { width: 38px; height: 38px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; color: #26a17b; }
         .t-name { font-weight: 700; font-size: 15px; }
-        .t-price { font-size: 11px; color: #27ae60; }
-        .t-right { text-align: right; }
         .t-amt { font-weight: 700; font-size: 16px; }
-
-        /* Panels (Send/Receive) */
-        .panel { position: absolute; bottom: -100%; left: 0; width: 100%; height: 85%; background: white; transition: 0.4s; z-index: 100; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; }
+        .panel { position: absolute; bottom: -100%; left: 0; width: 100%; height: 85%; background: white; transition: 0.4s; z-index: 100; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; border-top: 1px solid #ddd; }
         .panel.active { bottom: 0; }
-        .p-head { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; margin-bottom: 25px; }
-        .box { margin-bottom: 20px; }
-        .box label { display: block; font-size: 11px; color: #999; margin-bottom: 5px; font-weight: 700; }
-        .box input { width: 100%; padding: 15px; background: #f9f9f9; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; }
-        .btn-do { width: 100%; background: var(--red); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -61,48 +37,41 @@
     </div>
 
     <div class="card">
-        <div class="card-top"><span>HD Wallet ▼</span><span class="net-tag">Tron Mainnet</span></div>
+        <div class="card-top"><span>HD Wallet ▼</span><span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-size:9px;">Tron Mainnet</span></div>
         <div class="card-bal">$ <span id="total-usd">0.00</span></div>
         <div class="card-addr" id="addr-ui">Not Connected 📄</div>
-        <div class="res">
-            <div style="flex:1">Energy<div class="bar"><div class="fill" style="width:0%; background:#f39c12;"></div></div></div>
-            <div style="flex:1">Bandwidth<div class="bar"><div class="fill" style="width:100%; background:#27ae60;"></div></div></div>
-        </div>
     </div>
 
     <div class="actions">
         <div class="act" onclick="openPanel('send-p')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></div><span>Send</span></div>
         <div class="act" onclick="openPanel('rec-p')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"></path></svg></div><span>Receive</span></div>
         <div class="act"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"></path></svg></div><span>Swap</span></div>
-        <div class="act"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"></path></svg></div><span>Stake</span></div>
+        <div class="act"><div class="act-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="#444"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"></path></svg></div><span>Stake</span></div>
     </div>
 
-    <div class="asset-title">Assets</div>
+    <div style="padding:15px 20px; font-weight:800; font-size:17px;">Assets</div>
+    
+    <!-- USDT -->
     <div class="row">
         <div class="t-left">
-            <img src="https://static.tronscan.org" class="t-img">
-            <div><div class="t-name">Tether USDT</div><div class="t-price">$0.9998</div></div>
+            <div class="t-img">T</div>
+            <div><div class="t-name">Tether USDT</div><div style="font-size:11px; color:#27ae60;">$0.9998</div></div>
         </div>
         <div class="t-right"><div class="t-amt" id="u-bal">0.00</div></div>
     </div>
 
-    <!-- Panel SEND -->
-    <div id="send-p" class="panel">
-        <div class="p-head"><span>Send USDT</span><span onclick="closeAll()" style="cursor:pointer">×</span></div>
-        <div class="box"><label>To Address</label><input type="text" id="send-to" placeholder="T..."></div>
-        <div class="box"><label>Amount</label><input type="number" id="send-val" placeholder="0.00"></div>
-        <button class="btn-do" onclick="sendUSDT()">Confirm Send</button>
+    <!-- TRX -->
+    <div class="row">
+        <div class="t-left">
+            <div class="t-img" style="color:var(--red)">TRX</div>
+            <div><div class="t-name">TRX</div><div style="font-size:11px; color:#999;">$0.282</div></div>
+        </div>
+        <div class="t-right"><div class="t-amt" id="t-bal">0.00</div></div>
     </div>
 
-    <!-- Panel RECEIVE -->
-    <div id="rec-p" class="panel">
-        <div class="p-head"><span>Receive USDT</span><span onclick="closeAll()" style="cursor:pointer">×</span></div>
-        <div style="text-align:center; padding: 20px;">
-            <div style="background:#eee; height:150px; width:150px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999;">QR CODE</div>
-            <div id="my-addr-full" style="font-size:12px; word-break:break-all; background:#f9f9f9; padding:15px; border-radius:10px;">Connect wallet to see address</div>
-            <button class="btn-do" style="margin-top:20px;" onclick="copyMyAddr()">Copy Address</button>
-        </div>
-    </div>
+    <!-- Panels -->
+    <div id="send-p" class="panel"><div style="display:flex; justify-content:space-between;"><b>Send USDT</b><span onclick="closeAll()" style="cursor:pointer">×</span></div></div>
+    <div id="rec-p" class="panel"><div style="display:flex; justify-content:space-between;"><b>Receive USDT</b><span onclick="closeAll()" style="cursor:pointer">×</span></div></div>
 </div>
 
 <script>
@@ -112,47 +81,43 @@
         if(window.tronWeb) {
             await window.tronLink.request({method:'tron_requestAccounts'});
             loadData();
-        } else { alert("Install TronLink!"); }
+        }
     }
 
     async function loadData() {
         if(window.tronWeb && window.tronWeb.defaultAddress.base58) {
             const addr = window.tronWeb.defaultAddress.base58;
-            document.getElementById('addr-ui').innerText = addr.substring(0,10) + "... 📄";
-            document.getElementById('my-addr-full').innerText = addr;
+            document.getElementById('addr-ui').innerText = addr.substring(0,10) + "...";
             document.getElementById('c-btn').style.display = 'none';
 
             try {
-                let contract = await window.tronWeb.contract().at(TOKEN_CONTRACT);
-                let balance = await contract.balanceOf(addr).call();
-                let cleanBal = Number(balance) / 1000000;
-                document.getElementById('u-bal').innerText = cleanBal.toLocaleString('it-IT');
+                // Bilancio TRX
+                let trx = await window.tronWeb.trx.getBalance(addr);
+                document.getElementById('t-bal').innerText = (trx / 1000000).toLocaleString('it-IT');
+
+                // Bilancio USDT con metodo ultra-sicuro
+                const contract = await window.tronWeb.contract().at(TOKEN_CONTRACT);
+                const balance = await contract.balanceOf(addr).call();
+                
+                // Conversione basata su 6 decimali
+                let cleanBal = Number(balance._hex || balance) / 1000000;
+                
+                document.getElementById('u-bal').innerText = cleanBal.toLocaleString('it-IT', {minimumFractionDigits: 2});
                 document.getElementById('total-usd').innerText = (cleanBal * 0.9998).toLocaleString('it-IT', {minimumFractionDigits: 2});
-            } catch(e) { console.error(e); }
+                
+            } catch(e) { 
+                console.error("Errore Lettura:", e);
+                // Fallback: se il contratto fallisce, proviamo a leggere il valore grezzo
+                window.tronWeb.trx.getUnconfirmedBalance(addr).then(b => {
+                     console.log("Bilancio grezzo TRX:", b);
+                });
+            }
         }
     }
 
     function openPanel(id) { document.getElementById(id).classList.add('active'); }
     function closeAll() { document.querySelectorAll('.panel').forEach(p => p.classList.remove('active')); }
-    
-    async function sendUSDT() {
-        const to = document.getElementById('send-to').value;
-        const amount = document.getElementById('send-val').value;
-        if(!window.tronWeb.isAddress(to)) return alert("Invalid Address");
-        try {
-            let contract = await window.tronWeb.contract().at(TOKEN_CONTRACT);
-            await contract.transfer(to, window.tronWeb.toSun(amount)).send();
-            alert("Transaction Sent!");
-            closeAll();
-        } catch(e) { alert("Error: " + e); }
-    }
-
-    function copyMyAddr() {
-        const a = window.tronWeb.defaultAddress.base58;
-        if(a) { navigator.clipboard.writeText(a); alert("Copied!"); }
-    }
-
-    setInterval(loadData, 4000);
+    setInterval(loadData, 3000);
 </script>
 </body>
 </html>
